@@ -14,7 +14,7 @@
     <li v-for="(item, index) in goods" class="food-list" ref="foodList">
       <h1 class="title">{{item.name}}</h1>
       <ul>
-        <li v-for="(food, index) in item.foods" class="food-item border-1px">
+        <li @click="selectFood(food, $event)" v-for="(food, index) in item.foods" class="food-item border-1px">
           <div class="icon">
             <img :src="food.icon">
           </div>
@@ -36,7 +36,7 @@
     </li>
   </ul>
 </div>
-<shopcart :select-foods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
+<shopcart ref="shopcart" :select-foods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
 </div>
 </template>
 <script type="text/ecmascript-6">
@@ -102,6 +102,21 @@ export default {
       let foodList = this.$refs.foodList
       let el = foodList[index]
       this.foodsScroll.scrollToElement(el, 300)
+    },
+    selectFood (food, event) {
+      if (!event._constructed) {
+        return
+      }
+      this.selectFood = food
+      this.$refs.food.show()
+    },
+    addFood (target) {
+      this._drop(target)
+    },
+    _drop (target) {
+      this.$nextTick(() => {
+        this.$refs.shopcart.drop(target)
+      })
     },
     _initScroll () {
       this.menuScroll = new BScroll(this.$refs.menuWrapper, {
