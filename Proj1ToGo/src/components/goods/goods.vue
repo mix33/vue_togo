@@ -1,8 +1,9 @@
 <template>
+  <div>
     <div class="goods">
 <div class="menu-wrapper" ref="menuWrapper">
   <ul>
-    <li v-for="(item, index) in goods" class="menu-item" :class="{'current':currentIndex===index}" @click="selectMenu(index, $event)">
+    <li v-for="(item, index) in goods" class="menu-item" :class="{'current':currentIndex===index}" @click="selectMenu(index, $event)" ref="menuList">
  <span class="text border-1px">
             <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>{{item.name}}
           </span>
@@ -16,7 +17,7 @@
       <ul>
         <li @click="selectFood(food, $event)" v-for="(food, index) in item.foods" class="food-item border-1px">
           <div class="icon">
-            <img :src="food.icon">
+            <img width="57" height="57" :src="food.icon">
           </div>
           <div class="content">
             <h2 class="name">{{food.name}}</h2>
@@ -28,7 +29,7 @@
               <span class="now">¥{{food.price}}</span><span class="old" v-show="food.oldPrice">¥{{food.oldPrice}}</span>
             </div>
             <div class="cartcontrol-wrapper">
-              <cartcontrol :food="food"></cartcontrol>
+              <cartcontrol @add="addFood" :food="food"></cartcontrol>
             </div>
           </div>
         </li>
@@ -38,11 +39,14 @@
 </div>
 <shopcart ref="shopcart" :select-foods="selectFoods" :deliveryPrice="seller.deliveryPrice" :minPrice="seller.minPrice"></shopcart>
 </div>
+<food @add="addFood" :food="selectedFood" ref="food"></food>
+</div>
 </template>
 <script type="text/ecmascript-6">
 import BScroll from 'better-scroll'
 import shopcart from '../../components/shopcart/shopcart'
 import cartcontrol from '../../components/cartcontrol/cartcontrol'
+import food from '../../components/food/food'
 const ERR_OK = 0
 
 export default {
@@ -55,7 +59,8 @@ export default {
     return {
       goods: [],
       listHeight: [],
-      scrollY: 0
+      scrollY: 0,
+      selectedFood: {}
     }
   },
   computed: {
@@ -103,15 +108,15 @@ export default {
       let el = foodList[index]
       this.foodsScroll.scrollToElement(el, 300)
     },
+    addFood (target) {
+      this._drop(target)
+    },
     selectFood (food, event) {
       if (!event._constructed) {
         return
       }
-      this.selectFood = food
+      this.selectedFood = food
       this.$refs.food.show()
-    },
-    addFood (target) {
-      this._drop(target)
     },
     _drop (target) {
       this.$nextTick(() => {
@@ -127,7 +132,9 @@ export default {
         probeType: 3
       })
       this.foodsScroll.on('scroll', (pos) => {
-        this.scrollY = Math.abs(Math.round(pos.y))
+        if (pos.y <= 0) {
+          this.scrollY = Math.abs(Math.round(pos.y))
+        }
       })
     },
     _calculateHeight () {
@@ -139,11 +146,17 @@ export default {
         height += item.clientHeight
         this.listHeight.push(height)
       }
+    },
+    _followScroll (index) {
+      let menuList = this.$refs.menuList
+      let el = menuList[index]
+      this.meunScroll.scrollToElement(el, 300, 0, -100)
     }
   },
   components: {
     shopcart,
-    cartcontrol
+    cartcontrol,
+    food
   }
 }
 
