@@ -184,6 +184,23 @@ export default{
       .remark
         display: flex
         padding-top: 18px
+        .block
+          flex: 1
+          text-align: center
+          border-right: 1px solid rgba(7, 17, 27, 0.1)
+          &:last-schild
+            border: none
+          h2
+            font-size: 10px
+            margin-bottom: 4px
+            line-height: 10px
+            color: rgb(147, 153, 159)
+          .content
+            line-height: 24px
+            font-size: 10px
+            color: rgb(7, 17, 27)
+            .stress
+              font-size: 24px
       .favorite
         width: 50px
         position: absolute
@@ -202,23 +219,6 @@ export default{
           line-height: 10px
           font-size: 10px
           color: rgb(77, 85, 93)
-        .block
-          flex: 1
-          text-align: center
-          border-right: 1px solid rgba(7, 17, 27, 0.1)
-          &:last-schild
-            border: none
-          h2
-            font-size: 10px
-            margin-bottom: 4px
-            line-height: 10px
-            color: rgb(147, 153, 159)
-          .content
-            line-height: 24px
-            font-size: 10px
-            color: rgb(7, 17, 27)
-            .stress
-              font-size: 24px
     .bulletin
       padding: 18px 18px 0 18px
       .title
